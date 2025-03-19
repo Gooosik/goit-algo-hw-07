@@ -37,7 +37,8 @@ class Phone(Field):
 class Birthday(Field):
     def __init__(self, value):
         try:
-            self.value = datetime.datetime.strptime(value, "%d.%m.%Y").date()
+            self.value = datetime.datetime.strptime(value, "%d.%m.%Y")
+            super.__init__(value)
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
@@ -97,6 +98,12 @@ class AddressBook(UserDict):
                     upcoming.append({"name": record.name.value, "birthday": bday.strftime("%d.%m.%Y")})
         return upcoming
 
+    def __str__(self):
+        if not self.data:
+            return "No contacts found."
+        return "\n".join(str(record) for record in self.data.values())
+
+@input_error    
 def parse_input(user_input):
     cmd, *args = user_input.split()
     return cmd.strip().lower(), args
@@ -145,6 +152,9 @@ def show_birthday(args, book):
 def birthdays(book):
     upcoming = book.get_upcoming_birthdays()
     return "\n".join([f"{b['name']}: {b['birthday']}" for b in upcoming]) if upcoming else "No upcoming birthdays."
+
+def __str__(self):
+    return "str"
 
 def main():
     book = AddressBook()
