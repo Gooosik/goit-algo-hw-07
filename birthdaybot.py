@@ -11,6 +11,8 @@ def input_error(func):
             return "Contact not found."
         except IndexError:
             return "Invalid input."
+        except KeyboardInterrupt:
+            return main()
     return inner
 
 class Field:
@@ -88,7 +90,7 @@ class AddressBook(UserDict):
         upcoming = []
         for record in self.data.values():
             if record.birthday:
-                bday = record.birthday.value.replace(year=today.year)
+                bday = datetime.datetime.strptime(record.birthday.value, "%d.%m.%Y").date().replace(year=today.year)
                 if bday < today:
                     bday = bday.replace(year=today.year + 1)
                 delta = (bday - today).days
@@ -158,10 +160,11 @@ def birthdays(book):
 def __str__(self):
     return "str"
 
+@input_error
 def main():
     book = AddressBook()
     print("Welcome to the assistant bot!")
-    
+
     while True:
         user_input = input("Enter a command: ")
         command, args = parse_input(user_input)
@@ -190,3 +193,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
